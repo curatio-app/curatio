@@ -1,0 +1,83 @@
+/* tvOS Search: a title block (38 semibold + 25 secondary), the type switch and
+   genre pills, then a poster grid or ranked shelves. */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: calc(22 * var(--u));
+  padding-top: calc(var(--nav-h) + 24px);
+  padding-bottom: clamp(3rem, 10vh, 7rem);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 var(--page-margin);
+}
+
+.heading {
+  font-size: calc(38 * var(--t));
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subtitle {
+  font-size: var(--fs-body-small);
+  color: var(--text-secondary);
+}
+
+.typeRow,
+.pills {
+  display: flex;
+  gap: 12px;
+  padding: 4px var(--page-margin);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.typeRow::-webkit-scrollbar,
+.pills::-webkit-scrollbar {
+  display: none;
+}
+
+/* Poster grid: tvOS Library cells (228 wide), label under each. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--grid-poster-w), 1fr));
+  gap: calc(36 * var(--u)) calc(22 * var(--u));
+  padding: 8px var(--page-margin) 0;
+}
+
+.grid > * {
+  --card-w: 100%;
+  width: 100%;
+}
+
+.resultSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 var(--page-margin);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.resultSummary button {
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  background: var(--panel);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.resultSummary button:hover,
+.resultSummary button:focus-visible {
+  background: #fff;
+  color: #000;
+}

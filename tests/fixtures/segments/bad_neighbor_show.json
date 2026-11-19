@@ -1,0 +1,16 @@
+{
+  "imdb_id": "tt_eval_bad_neighbor",
+  "season": 1,
+  "head_duration_sec": 600,
+  "tail_duration_sec": 600,
+  "episode_duration_sec": 1500,
+  "seed": 7777,
+  "intro": { "start": 35.0, "duration": 60.0 },
+  "credits": { "abs_start": 1440.0, "duration": 55.0 },
+  "episodes": [
+    { "episode": 1 },
+    { "episode": 2 },
+    { "episode": 3, "no_intro": true },
+    { "episode": 4 }
+  ]
+}

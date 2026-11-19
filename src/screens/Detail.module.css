@@ -1,0 +1,756 @@
+/* tvOS Details: a full-window backdrop whose lower third is frosted (the whole
+   page frosts once scrolled past the hero), the information stack anchored
+   bottom-left at margin 88, then episodes, cast, similar titles and info
+   cards. Inactive sections sit at 84% opacity. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: #000;
+  color: var(--text-primary);
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.backdropArt,
+.frost {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+/* A pre-blurred copy masked to the lower third: cheaper than backdrop-filter. */
+.frost {
+  transform: scale(1.08);
+  filter: blur(42px) saturate(1.25) brightness(0.72);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 55%, #000 85%);
+  mask-image: linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 55%, #000 85%);
+}
+
+/* Past the hero the whole backdrop frosts: an unmasked copy fades in on top
+   (masks can't be animated, so toggling one used to snap). */
+.frostCover {
+  -webkit-mask-image: none;
+  mask-image: none;
+  opacity: 0;
+  transition: opacity 400ms ease-out;
+}
+
+.frostFull {
+  opacity: 1;
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 0% 100%, rgba(0, 0, 0, 0.7) 0, rgba(0, 0, 0, 0.35) 40%, transparent 70%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.35), transparent 22%, transparent 55%, rgba(0, 0, 0, 0.55));
+}
+
+.topBar {
+  position: absolute;
+  top: calc(24 * var(--u) + 8px);
+  left: var(--page-margin);
+  z-index: 3;
+}
+
+.back {
+  display: grid;
+  place-items: center;
+  width: max(44px, calc(68 * var(--t)));
+  height: max(44px, calc(68 * var(--t)));
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  color: #fff;
+  transition: transform var(--dur-standard) var(--ease-focus), background-color var(--dur-fast) ease-out;
+}
+
+.back:hover,
+.back:focus-visible {
+  background: #fff;
+  color: #000;
+  transform: scale(1.07);
+}
+
+.scroll {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.hero {
+  display: flex;
+  align-items: flex-end;
+  min-height: max(100vh, 620px);
+  padding: calc(120 * var(--u)) calc(88 * var(--u)) calc(54 * var(--u));
+  padding-inline: max(28px, calc(88 * var(--u)));
+}
+
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(16 * var(--u) + 2px);
+  max-width: min(1700px, 100%);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: calc(7 * var(--t)) calc(14 * var(--t));
+  border-radius: var(--radius-pill);
+  background: rgba(0, 0, 0, 0.36);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: var(--fs-caption);
+  color: #fff;
+}
+
+.badge svg {
+  color: var(--watched);
+}
+
+.badgeProminent {
+  background: var(--brand);
+  border-color: transparent;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.logo {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(calc(720 * var(--u)), 80vw);
+  max-height: calc(148 * var(--u));
+  object-fit: contain;
+  object-position: left bottom;
+  filter: drop-shadow(0 2px 16px rgba(0, 0, 0, 0.4));
+}
+
+.title {
+  max-width: min(calc(1000 * var(--u)), 90vw);
+  font-size: calc(70 * var(--t));
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  font-size: var(--fs-caption);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.certification {
+  padding: 2px 10px;
+  border-radius: var(--radius-chip);
+  border: 2px solid rgba(255, 255, 255, 0.42);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.fact + .fact::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 14px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.38);
+  vertical-align: middle;
+}
+
+.watchedFact {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+}
+
+.watchedFact svg {
+  color: var(--watched);
+}
+
+.episodeUnavailable .episodeArt img,
+.episodeUnavailable .episodeArtFallback {
+  opacity: 0.45;
+}
+
+.episodeUnavailable {
+  cursor: default;
+}
+
+.episodeHeading {
+  font-size: calc(26 * var(--t));
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.synopsis {
+  max-width: min(calc(1000 * var(--u)), 92vw);
+  font-size: var(--fs-synopsis);
+  line-height: 1.42;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.clamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.moreButton {
+  margin-top: 4px;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.resume {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: var(--fs-caption);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.resumeBar {
+  display: block;
+  width: calc(230 * var(--u) + 40px);
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.22);
+  overflow: hidden;
+}
+
+.resumeBar > span {
+  display: block;
+  height: 100%;
+  background: var(--brand);
+}
+
+/* tvOS DetailsPillButton: primary ultra-thin glass, secondary outlined;
+   hover and focus are white with black text. */
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: max(40px, calc(64 * var(--t)));
+  padding: calc(13 * var(--t)) calc(24 * var(--t));
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: var(--fs-pill);
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    background-color var(--dur-fast) ease-out,
+    color var(--dur-fast) ease-out,
+    border-color var(--dur-fast) ease-out;
+}
+
+.pillPrimary {
+  border-color: transparent;
+  background: rgba(255, 255, 255, 0.14);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  color: #fff;
+  font-weight: 600;
+}
+
+.pill:hover:not(:disabled),
+.pill:focus-visible {
+  background: #fff;
+  border-color: #fff;
+  color: #000;
+}
+
+.pill:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.menuPill {
+  width: max(40px, calc(64 * var(--t)));
+  height: max(40px, calc(64 * var(--t)));
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.starring {
+  max-width: min(calc(1000 * var(--u)), 92vw);
+  font-size: var(--fs-caption);
+  color: rgba(255, 255, 255, 0.58);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.failure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  padding: 14px 18px;
+  border-radius: var(--radius-group);
+  background: rgba(0, 0, 0, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.failure strong {
+  color: #fff;
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: calc(60 * var(--u));
+  padding-bottom: calc(240 * var(--u));
+}
+
+.section {
+  opacity: 0.84;
+  transform: scale(0.995);
+  transform-origin: left top;
+  transition:
+    opacity var(--dur-standard) ease-out,
+    transform var(--dur-standard) ease-out;
+  scroll-margin-top: calc(24 * var(--u));
+}
+
+.section:hover,
+.section:focus-within {
+  opacity: 1;
+  transform: none;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 var(--page-margin);
+}
+
+.sectionTitle {
+  font-size: var(--fs-row-title);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.section > .sectionTitle {
+  padding: 0 var(--page-margin);
+}
+
+.infoCard > .sectionTitle {
+  padding: 0;
+}
+
+.seasonStatic {
+  font-size: var(--fs-body-small);
+  color: var(--text-secondary);
+}
+
+/* Season menu: tvOS dropdown chip, white when focused. */
+.seasonPicker {
+  position: relative;
+}
+
+.seasonButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: calc(8 * var(--t) + 2px) calc(18 * var(--t));
+  border-radius: calc(16 * var(--u) + 4px);
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: calc(27 * var(--t));
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.94);
+}
+
+.seasonButton:hover,
+.seasonButton:focus-visible,
+.seasonButton[aria-expanded='true'] {
+  background: #fff;
+  color: #000;
+}
+
+.seasonList {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 10;
+  min-width: 220px;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: var(--radius-group);
+  background: rgba(28, 28, 30, 0.92);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: inset 0 0 0 1px var(--separator-strong), 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+
+.seasonList button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: var(--fs-body-small);
+  color: var(--text-primary);
+  text-align: left;
+}
+
+.seasonList button:hover,
+.seasonList button:focus-visible {
+  background: #fff;
+  color: #000;
+  outline: none;
+}
+
+/* Episodes: tvOS cards (500-wide 16:9 art, radius 24, text panel below). */
+.episodeRail,
+.castRail {
+  display: flex;
+  gap: calc(40 * var(--u));
+  padding: calc(24 * var(--u)) var(--page-margin) calc(30 * var(--u));
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  scroll-padding-inline: var(--page-margin);
+}
+
+.episodeRail::-webkit-scrollbar,
+.castRail::-webkit-scrollbar {
+  display: none;
+}
+
+.episodeCell {
+  position: relative;
+  flex: 0 0 calc(500 * var(--u));
+  width: calc(500 * var(--u));
+}
+
+.episode {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-episode);
+  background: rgba(0, 0, 0, 0.34);
+  text-align: left;
+  transition:
+    transform var(--dur-standard) var(--ease-focus),
+    box-shadow var(--dur-standard) ease-out;
+}
+
+.episode:hover,
+.episode:focus-visible {
+  transform: scale(1.04);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.75), 0 calc(16 * var(--u)) calc(40 * var(--u)) rgba(0, 0, 0, 0.55);
+}
+
+.episodeArt {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--card);
+}
+
+.episodeArt img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.episodeArtFallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: var(--fs-row-title);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.episodeMarker {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: rgba(0, 0, 0, 0.44);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: calc(19 * var(--t));
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.episodeWatched {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: var(--watched);
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.6));
+}
+
+.episodeProgress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.episodeProgress > span {
+  display: block;
+  height: 100%;
+  background: var(--brand);
+}
+
+.episodeText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: calc(200 * var(--u));
+  padding: calc(16 * var(--u)) calc(20 * var(--u)) calc(18 * var(--u));
+}
+
+.episodeText small {
+  font-size: calc(20 * var(--t));
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.episodeText strong {
+  font-size: var(--fs-card-title);
+  font-weight: 600;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.episodeText span {
+  font-size: var(--fs-card-meta);
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.78);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.episodeMenu {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity var(--dur-fast) ease-out;
+}
+
+.episodeCell:hover .episodeMenu,
+.episodeCell:focus-within .episodeMenu,
+.episodeMenu[aria-expanded='true'] {
+  opacity: 1;
+}
+
+/* Cast: tvOS 176x264 cards, portrait 168 tall over a 96 text footer. */
+.castRail {
+  gap: calc(32 * var(--u));
+}
+
+.castCard {
+  flex: 0 0 calc(176 * var(--u) + 24px);
+  width: calc(176 * var(--u) + 24px);
+  overflow: hidden;
+  border-radius: max(12px, calc(22 * var(--u)));
+  background: rgba(0, 0, 0, 0.34);
+}
+
+.castPhoto {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 176 / 168;
+  font-size: calc(42 * var(--t));
+  font-weight: 600;
+}
+
+.castPhoto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.castText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px 12px;
+  text-align: center;
+}
+
+.castText strong,
+.castText small {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.castText strong {
+  font-size: var(--fs-card-meta);
+  font-weight: 600;
+}
+
+.castText small {
+  font-size: calc(20 * var(--t));
+  color: var(--text-secondary);
+}
+
+.dragging {
+  cursor: grabbing;
+}
+
+.dragging * {
+  pointer-events: none;
+}
+
+/* Info cards: radius 22, black 48%, white 14% stroke. */
+.infoCard {
+  display: flex;
+  flex-direction: column;
+  gap: calc(20 * var(--u) + 6px);
+  margin: 0 var(--page-margin);
+  padding: calc(28 * var(--u) + 8px);
+  border-radius: var(--radius-info);
+  background: rgba(0, 0, 0, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.22);
+}
+
+.tagline {
+  font-size: var(--fs-body-small);
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.about {
+  max-width: 1500px;
+  font-size: var(--fs-body-small);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.reviewers {
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px 28px;
+}
+
+.infoRow dt {
+  font-size: calc(20 * var(--t));
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.infoRow dd {
+  margin: 4px 0 0;
+  font-size: var(--fs-body-small);
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.inlineFailure {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px var(--page-margin);
+  color: var(--text-secondary);
+}
+
+.railButtons {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.railButtons button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.railButtons button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.railButtons button:disabled {
+  opacity: 0.35;
+}
+
+/* Recommendation-only titles: why there is no Play. */
+.availabilityNote {
+  margin: 0;
+  font-size: var(--fs-caption);
+  color: rgba(255, 255, 255, 0.72);
+}

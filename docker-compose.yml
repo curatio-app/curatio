@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: curatio-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-curatio}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-curatio}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # PostgreSQL is intentionally not published to the host in production.
+    # Use docker-compose.dev.yml for localhost database access during development.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-curatio}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      args:
+        CURATIO_GIT_REVISION: ${CURATIO_GIT_REVISION:-unknown}
+    container_name: curatio-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-curatio}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-curatio}
+      - DAILY_UPDATE_ENABLED=${DAILY_UPDATE_ENABLED:-false}
+      - DAILY_UPDATE_TIME=${DAILY_UPDATE_TIME:-03:00}
+      # nginx is the one proxy in front; read the caller IP it appends.
+      - TRUSTED_PROXY_COUNT=${TRUSTED_PROXY_COUNT:-1}
+    ports:
+      # Loopback only: nginx in front is the public entry point. Publishing on
+      # all interfaces would let clients bypass it (and forge X-Forwarded-*).
+      - "127.0.0.1:8000:8000"
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      args:
+        CURATIO_GIT_REVISION: ${CURATIO_GIT_REVISION:-unknown}
+    container_name: curatio-worker
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-curatio}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-curatio}
+    command: "tail -f /dev/null"  # Keep container running for manual worker execution
+    profiles:
+      - workers  # Only start when explicitly requested
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    name: curatio-network

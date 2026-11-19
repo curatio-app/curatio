@@ -1,0 +1,87 @@
+/* tvOS Library: "Saved Titles" 38 semibold with a count line, filter capsules
+   and a sort menu, then a 7-column labelled poster grid (228 wide). */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: calc(40 * var(--u));
+  padding-top: calc(var(--nav-h) + 24px);
+  padding-bottom: clamp(3rem, 10vh, 7rem);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 var(--page-margin);
+}
+
+.heading {
+  font-size: calc(38 * var(--t));
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.count {
+  font-size: var(--fs-body-small);
+  color: var(--text-secondary);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: calc(18 * var(--u) + 4px);
+}
+
+.sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+  font-size: var(--fs-pill);
+  color: var(--text-secondary);
+}
+
+.sort select {
+  min-height: max(34px, calc(50 * var(--t)));
+  padding: 0 calc(18 * var(--t));
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  font-size: var(--fs-pill);
+  font-weight: 600;
+}
+
+.sort select:hover,
+.sort select:focus-visible {
+  background: #fff;
+  color: #000;
+  outline: none;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: calc(14 * var(--u) + 4px);
+}
+
+.sectionTitle {
+  padding: 0 var(--page-margin);
+  font-size: var(--fs-row-title);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--grid-poster-w), 1fr));
+  gap: calc(36 * var(--u)) calc(22 * var(--u));
+  padding: 8px var(--page-margin) 0;
+}
+
+.grid > * {
+  --card-w: 100%;
+  width: 100%;
+}

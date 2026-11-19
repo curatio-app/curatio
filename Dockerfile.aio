@@ -1,0 +1,37 @@
+# Curatio all-in-one: the server with PostgreSQL built in, for Unraid and other
+# single-container setups. Everything lives in one volume, /data.
+#
+#   docker build -t curatio .
+#   docker build -f Dockerfile.aio --build-arg BASE_IMAGE=curatio -t curatio:aio .
+#   docker run -p 8000:8000 -v curatio:/data \
+#     -e BASE_URL=https://curatio.example.com -e TMDB_API_KEY=... \
+#     -e MASTER_PASSWORD=... curatio:aio
+ARG BASE_IMAGE=ghcr.io/curatio-app/curatio:latest
+FROM ${BASE_IMAGE}
+
+USER root
+
+# PostgreSQL 17 from the PostgreSQL project's own repository, so the major
+# version (and so the on-disk format in /data) stays fixed whatever Debian ships.
+ENV PG_MAJOR=17
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates gnupg tini gosu \
+    && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+       | gpg --dearmor -o /usr/share/keyrings/postgresql.gpg \
+    && . /etc/os-release \
+    && echo "deb [signed-by=/usr/share/keyrings/postgresql.gpg] https://apt.postgresql.org/pub/repos/apt ${VERSION_CODENAME}-pgdg main" \
+       > /etc/apt/sources.list.d/pgdg.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends postgresql-${PG_MAJOR} \
+    && apt-get purge -y gnupg && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY docker/aio-entrypoint.sh /usr/local/bin/curatio-aio
+RUN chmod 0755 /usr/local/bin/curatio-aio
+
+ENV CURATIO_DATA=/data
+VOLUME ["/data"]
+EXPOSE 8000
+
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/curatio-aio"]
+CMD []

@@ -1,0 +1,682 @@
+/* Web player — tvOS bottom bar, glass settings sheet, Netflix-style post-play.
+   Sizes follow the design tokens (--u layout unit, --t type unit). */
+
+.player {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: #000;
+  overflow: hidden;
+  user-select: none;
+  color: var(--text-primary);
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+  transition: inset var(--dur-catalog) var(--ease-catalog), width var(--dur-catalog) var(--ease-catalog),
+    height var(--dur-catalog) var(--ease-catalog), border-radius var(--dur-catalog) var(--ease-catalog);
+}
+
+/* Fill: crop to the screen (iPad Fit/Fill). */
+.videoFill { object-fit: cover; }
+
+/* Post-play: the video shrinks into a corner while the next-episode card shows. */
+.postplay .video {
+  inset: auto auto calc(140 * var(--u)) var(--page-margin);
+  width: min(42vw, calc(760 * var(--u)));
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-lg);
+}
+
+@keyframes player-spin { to { transform: rotate(360deg); } }
+
+/* ---- Chrome visibility ---- */
+
+.top,
+.bottom {
+  transition: opacity var(--dur-standard) ease;
+}
+
+.chromeHidden .top,
+.chromeHidden .bottom {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.chromeHidden { cursor: none; }
+
+/* ---- Startup screen ---- */
+
+.startup {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.startupArt {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.55;
+}
+
+.startupShade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.35) 55%, rgba(0, 0, 0, 0.6) 100%);
+}
+
+.startupContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: calc(10 * var(--u));
+  padding: 0 var(--page-margin) calc(120 * var(--u));
+}
+
+.startupLogo {
+  max-width: min(46vw, calc(620 * var(--u)));
+  max-height: calc(220 * var(--u));
+  object-fit: contain;
+  object-position: left bottom;
+}
+
+.startupTitle {
+  font-size: var(--fs-display);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.startupEpisode {
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+/* ---- Spinner / phase label ---- */
+
+.spinner {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  pointer-events: none;
+}
+
+.spinnerLabel {
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.stillLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: var(--fs-small);
+  color: var(--text-secondary);
+  pointer-events: auto;
+}
+
+.bufferRingWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0));
+}
+
+.bufferRing {
+  display: block;
+  animation: player-spin 0.9s linear infinite;
+}
+
+.bufferRingTrack,
+.bufferRingArc {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.bufferRingTrack { stroke: var(--progress-track); }
+.bufferRingArc {
+  stroke: var(--accent);
+  stroke-dasharray: 33 99;
+}
+
+.autoplayHint,
+.seekIndicator,
+.toast {
+  position: absolute;
+  left: 50%;
+  z-index: 5;
+  transform: translateX(-50%);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-pill);
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.autoplayHint { top: calc(50% + 58px); color: var(--text-secondary); }
+.seekIndicator { top: 18%; }
+.toast { top: calc(110 * var(--u)); background: var(--glass-fill); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); }
+
+/* ---- Top bar ---- */
+
+.top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: calc(env(safe-area-inset-top) + calc(36 * var(--u))) var(--page-margin) calc(60 * var(--u));
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent);
+}
+
+.topActions { display: flex; align-items: center; gap: 0.5rem; margin-left: auto; }
+
+.roundButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--glass-fill);
+  color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  flex: 0 0 auto;
+  transition: background var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+.roundButton:hover,
+.roundButton:focus-visible { background: var(--accent); color: var(--on-accent); outline: none; }
+
+/* ---- Bottom bar ---- */
+
+.bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  min-height: calc(400 * var(--u));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: calc(14 * var(--u));
+  padding: 0 var(--page-margin) calc(env(safe-area-inset-bottom) + calc(44 * var(--u)));
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.45) 45%, transparent 100%);
+}
+
+.titleLine { display: flex; flex-direction: column; gap: calc(4 * var(--u)); }
+.titleLine span { font-size: var(--fs-caption); color: var(--text-secondary); }
+.titleLine strong {
+  font-size: calc(38 * var(--t));
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scrubWrap { display: flex; flex-direction: column; }
+
+.scrub {
+  padding: 10px 0;
+  cursor: pointer;
+  touch-action: none;
+  outline: none;
+}
+
+.scrubTrack {
+  position: relative;
+  display: block;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--progress-track);
+  transition: height var(--dur-fast) ease;
+}
+.scrub:hover .scrubTrack,
+.scrub:focus-visible .scrubTrack,
+.scrubActive .scrubTrack { height: 6px; }
+
+.scrubBuffer,
+.scrubFill,
+.scrubMark {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  border-radius: 999px;
+}
+.scrubBuffer { background: rgba(255, 255, 255, 0.35); }
+.scrubFill { background: #fff; }
+.scrubMark { background: rgba(255, 255, 255, 0.55); opacity: 0.7; }
+
+.scrubThumb {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #fff;
+  transform: translate(-50%, -50%) scale(0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  transition: transform var(--dur-fast) ease;
+}
+.scrub:hover .scrubThumb,
+.scrub:focus-visible .scrubThumb,
+.scrubActive .scrubThumb { transform: translate(-50%, -50%) scale(1); }
+.scrub:focus-visible .scrubTrack { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6); }
+
+.scrubTooltip {
+  position: absolute;
+  bottom: 18px;
+  transform: translateX(-50%);
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-icon);
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.controlRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.controlGroup { display: flex; align-items: center; gap: calc(10 * var(--u)); min-width: 0; }
+
+.controlButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.9);
+  background: transparent;
+  flex: 0 0 auto;
+  transition: background var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+.controlButton:hover,
+.controlButton:focus-visible { background: var(--accent); color: var(--on-accent); outline: none; }
+
+.volume { display: flex; align-items: center; gap: 0.3rem; }
+.volumeSlider {
+  width: clamp(64px, 10vw, 120px);
+  height: 4px;
+  accent-color: #fff;
+  cursor: pointer;
+}
+
+.timeLabel {
+  margin-left: 0.5rem;
+  font-size: var(--fs-small);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- Skip intro / credits ---- */
+
+.prompts {
+  position: absolute;
+  right: var(--page-margin);
+  bottom: calc(300 * var(--u));
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  align-items: flex-end;
+}
+.promptGroup { display: flex; align-items: center; gap: 0.4rem; }
+.actionChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.92);
+  color: #000;
+  font-size: var(--fs-settings-label);
+  font-weight: 700;
+}
+.actionChip:hover { background: #fff; }
+.promptDismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.85);
+}
+.countdown { flex: 0 0 auto; }
+
+/* ---- Post-play ---- */
+
+.postPlayCard {
+  position: absolute;
+  right: var(--page-margin);
+  bottom: calc(140 * var(--u));
+  z-index: 5;
+  display: flex;
+  gap: calc(24 * var(--u));
+  width: min(46vw, calc(860 * var(--u)));
+  padding: calc(24 * var(--u));
+  border-radius: var(--radius-sheet);
+  background: var(--glass-fill);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 0.5px solid var(--glass-stroke);
+}
+.postPlayArt {
+  width: 40%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-card);
+  flex: 0 0 auto;
+}
+.postPlayBody { display: flex; flex-direction: column; gap: calc(8 * var(--u)); min-width: 0; }
+.postPlayEyebrow { font-size: var(--fs-eyebrow); color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em; }
+.postPlayTitle { font-size: var(--fs-row-title); font-weight: 600; }
+.postPlaySynopsis {
+  font-size: var(--fs-small);
+  color: var(--text-body);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.postPlayActions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: auto; }
+
+/* ---- Error screen ---- */
+
+.errorScreen {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.errorShade { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.72); }
+.errorContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  max-width: 36rem;
+  padding: var(--page-margin);
+  text-align: center;
+}
+.errorTitle { font-size: var(--fs-heading); font-weight: 700; }
+.errorMessage { font-size: var(--fs-settings-label); color: var(--text-body); line-height: 1.5; }
+.errorCode { font-size: var(--fs-small); color: var(--text-tertiary); font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
+.errorActions { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-top: 0.4rem; }
+.errorLinks { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
+
+.primaryButton,
+.ghostButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  transition: background var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+.primaryButton { background: #fff; color: #000; }
+.ghostButton { background: var(--button-more); color: rgba(255, 255, 255, 0.9); font-weight: 600; }
+.ghostButton:hover,
+.ghostButton:focus-visible { background: var(--accent); color: var(--on-accent); outline: none; }
+.primaryButton:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+.linkButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: var(--fs-small);
+  color: var(--text-secondary);
+  background: none;
+}
+.linkButton:hover,
+.linkButton:focus-visible { color: #fff; text-decoration: underline; outline: none; }
+
+/* ---- Settings sheet (top-anchored glass) ---- */
+
+.panel {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + calc(36 * var(--u)));
+  right: var(--page-margin);
+  z-index: 7;
+  width: min(30rem, calc(100% - 32px));
+  /* Ends above the bottom bar: never covers the scrub bar or the controls. */
+  max-height: calc(100% - calc(36 * var(--u)) - 11rem);
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-sheet);
+  background: rgba(20, 20, 22, 0.72);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 0.5px solid var(--glass-stroke);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.1rem 0.6rem;
+}
+.panelHeader strong { font-size: var(--fs-heading); font-weight: 700; }
+
+/* Capsule tab control. */
+.panelTabs {
+  display: flex;
+  gap: 2px;
+  margin: 0 1.1rem 0.8rem;
+  padding: 3px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.08);
+}
+.panelTabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  /* Every tab always fits: they share the width and the label gives way first. */
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0.4rem 0.45rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  white-space: nowrap;
+}
+.panelTabs button > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.panelTabs button > svg { flex: none; }
+.panelTabs button:focus-visible { outline: 2px solid #fff; outline-offset: -2px; }
+.tabActive { background: rgba(255, 255, 255, 0.92) !important; color: #000 !important; }
+
+.panelBody::-webkit-scrollbar { width: 6px; }
+.panelBody::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.35); border-radius: 3px; }
+
+.panelBody {
+  flex: 1;
+  overflow-y: auto;
+  /* The app hides scrollbars globally; a long source list needs to show it scrolls. */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+  padding: 0.2rem 0.7rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.panelActions { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.8rem 0.4rem 0; }
+
+.episodeList { display: flex; flex-direction: column; gap: 0.1rem; }
+
+.trackRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.7rem 0.6rem;
+  border-radius: var(--radius-card);
+  text-align: left;
+  color: var(--text-primary);
+}
+.trackRow:hover,
+.trackRow:focus-visible { background: rgba(255, 255, 255, 0.08); outline: none; }
+.trackRow svg { color: #fff; flex: 0 0 auto; }
+.trackRow span { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; flex: 1; }
+.trackRow strong { font-size: var(--fs-settings-label); font-weight: 600; }
+.trackRow small { font-size: var(--fs-small); color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.trackRow .unselectedCircle { color: rgba(255, 255, 255, 0.4); }
+
+.pillWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem 0.4rem 0.8rem;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  font-size: var(--fs-settings-label);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.86);
+  background: var(--button-more);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  white-space: nowrap;
+}
+.pill:hover,
+.pill:focus-visible { background: rgba(255, 255, 255, 0.2); outline: none; }
+.pill:disabled { opacity: 0.4; }
+.pillActive { color: #000; background: #fff; box-shadow: none; }
+.pillActive:hover { background: #fff; }
+
+.panelNote {
+  padding: 1rem 0.6rem;
+  font-size: var(--fs-small);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+  .panel { right: 16px; left: 16px; width: auto; }
+  .timeLabel { display: none; }
+  .volumeSlider { display: none; }
+  .controlGroup { gap: 2px; }
+  .postPlayCard { left: 16px; right: 16px; width: auto; flex-direction: column; }
+  .postPlayArt { width: 100%; }
+  .postplay .video { width: 60vw; }
+}
+
+/* tvOS/iOS resume gate: asked before a title with a saved position plays. */
+.resumeGate {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.resumeCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: min(640px, 100%);
+  padding: 28px 34px;
+  border-radius: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(20, 20, 22, 0.78);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 12px 44px rgba(0, 0, 0, 0.36);
+}
+
+.resumeCard strong {
+  margin-bottom: 8px;
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.resumeCard button {
+  padding: 16px 22px;
+  border-radius: 18px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: left;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+}
+
+.resumeCard button:hover,
+.resumeCard button:focus-visible {
+  color: #000;
+  background: #fff;
+}
+
+.resumeCard .resumePrimary {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.resumeClose {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(0, 0, 0, 0.36);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}

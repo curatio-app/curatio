@@ -1,0 +1,148 @@
+/*
+ * Curatio design tokens — the tvOS landscape design language (DesignSystem/Theme.swift)
+ * adapted for desktop. Sizes are written in tvOS points and scaled by two units that
+ * follow the window width (see DesktopContracts/design-tokens.json, version 2):
+ *
+ *   --u  layout unit  clamp(0.50, W / 2560, 0.80)      px per tv point
+ *   --t  type unit    clamp(0.56, 0.36 + W / 6000, 0.70)
+ *
+ * so a 260 pt tvOS poster is calc(260 * var(--u)). desktopScale.ts mirrors these
+ * formulas for layout maths in JS.
+ */
+:root {
+  color-scheme: dark;
+
+  --u: clamp(0.5px, calc(100vw / 2560), 0.8px);
+  --t: clamp(0.56px, calc(0.36px + 100vw / 6000), 0.7px);
+
+  /* Surfaces — tvOS Theme "Obsidian" */
+  --canvas: #000000;
+  --surface: rgba(255, 255, 255, 0.06);
+  --surface-raised: rgba(255, 255, 255, 0.1);
+  --panel: rgba(255, 255, 255, 0.1);
+  --panel-elevated: rgba(255, 255, 255, 0.14);
+  --card: #1c1c1c;
+  --overlay: rgba(255, 255, 255, 0.08);
+  --separator: rgba(255, 255, 255, 0.06);
+  --separator-strong: rgba(255, 255, 255, 0.16);
+  --divider: rgba(255, 255, 255, 0.08);
+
+  /* Text */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --text-body: rgba(255, 255, 255, 0.78);
+  /* tvOS uses 0.35; kept at 0.5 on the web for WCAG AA against black. */
+  --text-tertiary: rgba(255, 255, 255, 0.5);
+
+  /* Brand accent (tvOS Theme.accent). Progress, badges and setting icons only:
+     focus and hover are always white. */
+  --brand: #e82133;
+  --brand-soft: rgba(232, 33, 51, 0.15);
+  --progress-track: rgba(255, 255, 255, 0.12);
+  --progress-fill: var(--brand);
+  --now-playing-dot: rgba(255, 255, 255, 0.88);
+  --watched: #38b84a;
+
+  /* Actions. A focused or hovered control fills white with black text. */
+  --accent: #ffffff;
+  --on-accent: #000000;
+  --button-more: rgba(255, 255, 255, 0.12);
+  --destructive: #e82133;
+  --connected: #38b84a;
+  --coming-soon-accent: var(--brand);
+
+  /* Setting icon tiles — tvOS settings use the brand accent on a soft tile. */
+  --tile-blue-bg: var(--brand-soft);   --tile-blue-tint: var(--brand);
+  --tile-purple-bg: var(--brand-soft); --tile-purple-tint: var(--brand);
+  --tile-green-bg: rgba(56, 184, 74, 0.15); --tile-green-tint: #38b84a;
+  --tile-orange-bg: var(--brand-soft); --tile-orange-tint: var(--brand);
+  --tile-red-bg: var(--brand-soft);    --tile-red-tint: var(--brand);
+  --tile-gray-bg: rgba(255, 255, 255, 0.08); --tile-gray-tint: rgba(255, 255, 255, 0.6);
+
+  /* Shape (tvOS radii, scaled with a floor so small windows stay rounded) */
+  --radius-poster: max(8px, calc(14 * var(--u)));
+  --radius-card: max(8px, calc(12 * var(--u)));
+  --radius-hero: max(10px, calc(18 * var(--u)));
+  --radius-group: max(10px, calc(16 * var(--u)));
+  --radius-info: max(12px, calc(22 * var(--u)));
+  --radius-episode: max(12px, calc(24 * var(--u)));
+  --radius-sheet: max(16px, calc(34 * var(--u)));
+  --radius-chip: 6px;
+  --radius-icon: 7px;
+  --radius-pill: 999px;
+
+  /* Layout */
+  --page-margin: max(24px, calc(88 * var(--u)));
+  --nav-capsule-h: calc(64 * var(--t));
+  --nav-h: calc(var(--nav-capsule-h) + 24px);
+  --nav-offset: calc(var(--nav-h) + 6px);
+  --hero-h: min(clamp(420px, 62vh, 760px), calc((100vw - 2 * var(--page-margin)) / 1.8));
+  --poster-w: calc(260 * var(--u));
+  --poster-h: calc(450 * var(--u));
+  --poster-expanded-w: calc(660 * var(--u));
+  --shelf-gap: calc(24 * var(--u));
+  --continue-w: calc(426 * var(--u));
+  --continue-h: calc(240 * var(--u));
+  --grid-poster-w: calc(228 * var(--u));
+  --section-gap: calc(30 * var(--u));
+  --row-title-gap: calc(14 * var(--u));
+
+  /* Old names, kept as aliases for screens that still read them. */
+  --page-inset: var(--page-margin);
+
+  /* Type — tvOS roles × --t */
+  --fs-display: calc(76 * var(--t));
+  --fs-page-title: calc(52 * var(--t));
+  --fs-hero-title: calc(52 * var(--t));
+  --fs-row-title: calc(36 * var(--t));
+  --fs-nav: calc(29 * var(--t));
+  --fs-body-large: calc(29 * var(--t));
+  --fs-body-small: calc(25 * var(--t));
+  --fs-synopsis: calc(26 * var(--t));
+  --fs-card-title: calc(26 * var(--t));
+  --fs-card-meta: calc(23 * var(--t));
+  --fs-pill: calc(23 * var(--t));
+  --fs-caption: calc(23 * var(--t));
+
+  --fs-eyebrow: calc(20 * var(--t));
+  --fs-section: calc(21 * var(--t));
+  --fs-small: calc(22 * var(--t));
+  --fs-settings-value: calc(23 * var(--t));
+  --fs-settings-label: calc(26 * var(--t));
+  --fs-meta: calc(23 * var(--t));
+  --fs-body: calc(27 * var(--t));
+  --fs-shelf: var(--fs-row-title);
+  --fs-heading: calc(36 * var(--t));
+  --fs-title: calc(52 * var(--t));
+  --fs-bigtitle: calc(52 * var(--t));
+  --fs-onboard: calc(76 * var(--t));
+
+  /* Motion (tvOS Theme / CatalogMotion) */
+  --dur-fast: 160ms;
+  --dur-standard: 220ms;
+  --dur-catalog: 410ms;
+  --ease-catalog: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-page: cubic-bezier(0.35, 0, 0.2, 1);
+  --ease-focus: cubic-bezier(0.25, 0.9, 0.3, 1.05);
+
+  --shadow-lg: 0 30px 90px rgba(0, 0, 0, 0.56);
+  --shadow-card: 0 calc(14 * var(--u)) calc(34 * var(--u)) rgba(0, 0, 0, 0.62);
+
+  --glass-fill: rgba(255, 255, 255, 0.09);
+  --glass-stroke: rgba(255, 255, 255, 0.1);
+  --glass-blur: blur(24px) saturate(1.5);
+
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Segoe UI Variable Display", "Segoe UI", "Helvetica Neue", Roboto, sans-serif;
+}
+
+/* Narrow windows and phones: shrink the units so the shelves still show more
+   than two cards. The top bar adapts in TopNav.module.css; there is no bottom bar. */
+@media (max-width: 760px) {
+  :root {
+    --u: 0.42px;
+    --t: 0.56px;
+    --page-margin: 18px;
+    --hero-h: min(70vh, 132vw);
+  }
+}

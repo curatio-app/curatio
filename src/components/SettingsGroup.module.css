@@ -1,0 +1,179 @@
+/* tvOS SettingsView: section titles 36 bold; each row is its own panel
+   (white 10%, radius 16, 8% hairline, padding 20, 10 apart) with an accent
+   icon, a 27 semibold title and the control on the right. A focused or
+   hovered row turns white with black text; the toggle is 96x48 with a 40 knob. */
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: calc(14 * var(--u) + 4px);
+}
+
+.groupLabel {
+  font-size: var(--fs-row-title);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: calc(16 * var(--t) + 4px);
+  width: 100%;
+  min-height: max(52px, calc(84 * var(--t)));
+  padding: calc(14 * var(--t) + 4px) calc(20 * var(--t) + 4px);
+  border-radius: var(--radius-group);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: left;
+  color: var(--text-primary);
+  transition: background-color var(--dur-fast) ease-out, color var(--dur-fast) ease-out;
+}
+
+.interactive:hover,
+.interactive:focus-visible,
+.toggleRow:focus-within,
+.row:has(.select:focus-visible) {
+  background: #fff;
+  color: #000;
+  outline: none;
+}
+
+.interactive:hover .value,
+.interactive:focus-visible .value,
+.interactive:hover .chevron,
+.interactive:focus-visible .chevron,
+.row:has(.select:focus-visible) .select {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: calc(28 * var(--t) + 10px);
+  height: calc(28 * var(--t) + 10px);
+  border-radius: var(--radius-icon);
+}
+
+.label {
+  flex: 1;
+  font-size: calc(27 * var(--t));
+  font-weight: 600;
+}
+
+.value {
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chevron {
+  color: var(--text-secondary);
+  flex: 0 0 auto;
+}
+
+.statusText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.statusText .label {
+  flex: none;
+}
+
+.sub {
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--text-tertiary);
+}
+
+.dotOn {
+  background: var(--connected);
+}
+
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  text-align: right;
+  padding-right: 4px;
+  cursor: pointer;
+  outline: none;
+}
+
+.select option {
+  background: #1c1c1e;
+  color: #fff;
+}
+
+.toggle {
+  position: relative;
+  flex: 0 0 auto;
+  width: calc(96 * var(--t));
+  height: calc(48 * var(--t));
+  min-width: 46px;
+  min-height: 26px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  transition: background-color var(--dur-fast) ease-out;
+}
+
+.toggleOn {
+  background: var(--brand);
+}
+
+.toggleRow:focus-within .toggle {
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.toggleRow:focus-within .toggleOn {
+  background: #000;
+}
+
+.knob {
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  width: calc(40 * var(--t));
+  height: calc(40 * var(--t));
+  min-width: 20px;
+  min-height: 20px;
+  border-radius: 999px;
+  background: #fff;
+  transform: translateY(-50%);
+  transition: transform var(--dur-fast) ease-out;
+}
+
+/* Slide with a transform (composited) rather than animating `left`. */
+.toggleOn .knob {
+  transform: translate(calc(max(46px, 96 * var(--t)) - 8px - max(20px, 40 * var(--t))), -50%);
+}
+
+.tintBlue { background: var(--tile-blue-bg); color: var(--tile-blue-tint); }
+.tintPurple { background: var(--tile-purple-bg); color: var(--tile-purple-tint); }
+.tintGreen { background: var(--tile-green-bg); color: var(--tile-green-tint); }
+.tintOrange { background: var(--tile-orange-bg); color: var(--tile-orange-tint); }
+.tintRed { background: var(--tile-red-bg); color: var(--tile-red-tint); }
+.tintGray { background: var(--tile-gray-bg); color: var(--tile-gray-tint); }

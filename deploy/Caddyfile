@@ -1,0 +1,5 @@
+# Caddy gets and renews the HTTPS certificate for CURATIO_DOMAIN automatically.
+{$CURATIO_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy app:8000
+}

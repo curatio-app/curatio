@@ -1,0 +1,112 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+}
+
+/* Anchored under the top bar's avatar; a tvOS glass sheet. */
+.menu {
+  position: fixed;
+  top: calc(var(--nav-h) + 4px);
+  right: var(--page-margin);
+  z-index: 70;
+  width: 18rem;
+  max-width: calc(100vw - 2rem);
+  padding: 0.5rem;
+  border-radius: var(--radius-group);
+  background: rgba(28, 28, 30, 0.86);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow:
+    inset 0 0 0 1px var(--separator-strong),
+    0 24px 60px rgba(0, 0, 0, 0.6);
+}
+
+.heading {
+  padding: 0.35rem 0.6rem;
+  font-size: var(--fs-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-card);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+}
+
+.row:hover:not(:disabled),
+.row:focus-visible {
+  background: #fff;
+  color: #000;
+  outline: none;
+}
+
+.row:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.name {
+  flex: 1;
+  font-size: var(--fs-body);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.check {
+  color: var(--connected);
+  flex: 0 0 auto;
+}
+
+.actions {
+  margin-top: 0.35rem;
+  padding-top: 0.35rem;
+  border-top: 0.5px solid var(--separator);
+  display: flex;
+  flex-direction: column;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-card);
+  color: var(--text-secondary);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+
+.action:hover,
+.action:focus-visible {
+  background: #fff;
+  color: #000;
+  outline: none;
+}
+
+.row:hover .check,
+.row:focus-visible .check {
+  color: #000;
+}

@@ -1,0 +1,188 @@
+/* tvOS poster (Search / Library / More Like This): 2:3, radius 14, lift on
+   hover and focus (scale 1.03, white 54% stroke, shadow). */
+.cell {
+  display: flex;
+  flex-direction: column;
+  gap: calc(14 * var(--u));
+  position: relative;
+  width: var(--card-w, var(--poster-w));
+  flex: 0 0 var(--card-w, var(--poster-w));
+}
+
+/* Focus stroke + shadow on a separate layer that fades by opacity. */
+.cell::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-poster);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.54),
+    var(--shadow-card);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--dur-standard) var(--ease-focus),
+    opacity var(--dur-standard) ease-out;
+}
+
+.cell:has(> .card:hover)::before,
+.cell:has(> .card:focus-visible)::before {
+  opacity: 1;
+  transform: scale(1.03);
+}
+
+.card {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-poster);
+  background: var(--card);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.06);
+  transition: transform var(--dur-standard) var(--ease-focus);
+}
+
+.card:hover,
+.card:focus-visible {
+  transform: scale(1.03);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem;
+  text-align: center;
+  font-size: var(--fs-settings-label);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.savedBadge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+}
+
+.watchedBadge {
+  color: var(--watched);
+}
+
+.nowPlaying {
+  position: absolute;
+  left: 0.4rem;
+  bottom: 0.4rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--now-playing-dot);
+}
+
+.progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--progress-track);
+}
+
+.progress > span {
+  display: block;
+  height: 100%;
+  background: var(--progress-fill);
+}
+
+.caption {
+  font-size: var(--fs-card-meta);
+  font-weight: 600;
+  line-height: 1.25;
+  color: rgba(255, 255, 255, 0.82);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.captionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.captionMeta {
+  font-size: var(--fs-card-meta);
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+}
+
+/* "…" actions: revealed on hover/focus; touch uses long-press instead. */
+.cell { position: relative; }
+.menuTrigger {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.cell:hover .menuTrigger,
+.cell:focus-within .menuTrigger,
+.menuTrigger[aria-expanded="true"] { opacity: 1; }
+@media (hover: none) {
+  .menuTrigger { display: none; }
+}
+
+/* Coming-soon / New capsule (native ComingSoonFormatter badge). */
+.releaseBadge {
+  position: absolute;
+  top: 0.45rem;
+  left: 0.45rem;
+  max-width: calc(100% - 0.9rem);
+  padding: 0.18rem 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--brand);
+  color: #fff;
+  font-size: calc(18 * var(--t));
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.upcoming { background: var(--brand); }
+
+/* A title that is not on the Plex/Jellyfin servers rests a step darker, so what
+   you own reads at a glance; hover and focus show the full art. */
+.notOnServer .image,
+.notOnServer .fallback {
+  filter: brightness(0.55);
+  transition: filter var(--dur-standard) var(--ease-focus);
+}
+
+.notOnServer:hover .image,
+.notOnServer:focus-visible .image,
+.notOnServer:hover .fallback,
+.notOnServer:focus-visible .fallback {
+  filter: none;
+}

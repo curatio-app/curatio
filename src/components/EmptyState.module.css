@@ -1,0 +1,14 @@
+.error svg { color: var(--destructive); }
+
+.action {
+  margin-top: 0.4rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-pill);
+  border: 0.5px solid rgba(255, 255, 255, 0.16);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  font-size: var(--fs-settings-label);
+  font-weight: 600;
+}
+
+.action:hover { background: rgba(255, 255, 255, 0.12); }

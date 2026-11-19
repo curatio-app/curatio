@@ -1,0 +1,26 @@
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: 16%;
+  color: #fff;
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+  user-select: none;
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.18);
+}
+
+/* In the top bar control the text size follows the control (52t avatar). */
+.fill {
+  font-size: calc(22 * var(--t)) !important;
+}
+
+/* The active profile: a 4px white border hugging the avatar (tvOS picker). */
+.selected {
+  box-shadow:
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.18),
+    0 0 0 2px var(--canvas),
+    0 0 0 4px #fff;
+}

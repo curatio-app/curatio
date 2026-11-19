@@ -1,0 +1,11 @@
+.shell { min-height: 100%; overflow: hidden; }
+.hero { height: clamp(360px, 58vh, 680px); display: flex; flex-direction: column; justify-content: flex-end; gap: 13px; padding: 0 var(--page-inset) 3rem; background: linear-gradient(110deg,#101012 20%,#18181b 38%,#101012 55%); background-size: 220% 100%; animation: shimmer 1.7s ease-in-out infinite; }
+.hero span { display: block; height: 13px; width: min(36rem,72%); border-radius: 999px; background: rgba(255,255,255,.09); }
+.hero span:first-child { width: min(18rem,46%); height: 36px; }
+.hero span:last-child { width: min(28rem,60%); }
+.rails { display: grid; gap: 30px; padding: 12px var(--page-inset) 70px; }
+.heading { width: 150px; height: 15px; margin-bottom: 13px; border-radius: 999px; background: rgba(255,255,255,.08); }
+.cards { display: flex; gap: var(--shelf-gap); }
+.card { flex: 0 0 var(--poster-w); aspect-ratio: 2/3; border-radius: var(--radius-poster); background: linear-gradient(110deg,#111 20%,#1b1b1d 38%,#111 55%); background-size: 220% 100%; animation: shimmer 1.7s ease-in-out infinite; }
+@keyframes shimmer { to { background-position-x: -220%; } }
+@media (prefers-reduced-motion: reduce) { .hero,.card { animation: none; } }

@@ -1,0 +1,13 @@
+/* tvOS Settings: one column, max 960 wide, sections 56pt apart. */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: calc(56 * var(--u));
+  width: min(100%, calc(960px + 2 * var(--page-margin)));
+  margin: 0 auto;
+  padding: calc(var(--nav-h) + 24px) var(--page-margin) clamp(3rem, 10vh, 7rem);
+}
+
+.page h1 {
+  font-size: calc(52 * var(--t));
+}

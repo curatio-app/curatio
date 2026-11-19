@@ -1,0 +1,109 @@
+/* tvOS ProfilePickerView: black cover, "Who's watching?" 52 bold, 150pt
+   rounded-square avatars 40pt apart, name 27 semibold; focus/hover adds a
+   white ring with a clear gap and scales 1.08. The ring is an outline, so the
+   gap is transparent and never paints over the name below. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  padding: var(--page-margin);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(64 * var(--u) + 8px);
+}
+
+.title {
+  font-size: calc(52 * var(--t));
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.grid {
+  display: flex;
+  justify-content: center;
+  gap: calc(40 * var(--u) + 8px);
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 20px 16px 16px;
+  scrollbar-width: none;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Room for the lifted avatar plus its ring (~6px growth + 3px gap + 3px ring). */
+  gap: calc(18 * var(--u) + 18px);
+  width: calc(178 * var(--t) + 16px);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.avatarBox {
+  display: grid;
+  place-items: center;
+  width: calc(150 * var(--t));
+  height: calc(150 * var(--t));
+  border-radius: 16%;
+  outline: 3px solid transparent;
+  outline-offset: 3px;
+  transition:
+    transform var(--dur-standard) var(--ease-focus),
+    outline-color var(--dur-fast) ease-out;
+}
+
+.tile:focus-visible {
+  outline: none;
+}
+
+.avatarBox > span {
+  font-size: calc(63 * var(--t)) !important;
+}
+
+.addBox {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  box-shadow: inset 0 0 0 1px var(--separator-strong);
+}
+
+.tile:hover:not(:disabled) .avatarBox,
+.tile:focus-visible .avatarBox {
+  transform: scale(1.08);
+  outline-color: #fff;
+}
+
+.tile:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.name {
+  max-width: 100%;
+  font-size: calc(27 * var(--t));
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tile:hover .name,
+.tile:focus-visible .name {
+  color: var(--text-primary);
+}
+
+/* tvOS "Manage Profiles" capsule under the avatars. */
+.manageRow {
+  display: flex;
+  justify-content: center;
+}

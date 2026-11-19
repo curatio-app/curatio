@@ -1,0 +1,67 @@
+# Curatio Server: recommendations and sign-in for your Plex/Jellyfin library.
+# Setup guide: README.md in the repository root. Settings: .env (copy .env.example).
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: curatio-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-curatio}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-curatio}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-curatio}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  app:
+    image: ${CURATIO_IMAGE:-ghcr.io/curatio-app/curatio:latest}
+    container_name: curatio-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-curatio}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-curatio}
+      # One proxy (Caddy, or your own) sits in front and adds the caller's IP.
+      - TRUSTED_PROXY_COUNT=${TRUSTED_PROXY_COUNT:-1}
+    extra_hosts:
+      # Lets a local AI model on this machine be reached as host.docker.internal.
+      - "host.docker.internal:host-gateway"
+    ports:
+      # Only reachable from this machine by default; the HTTPS proxy is the
+      # public entry point. See "Use your own reverse proxy" in README.md.
+      - "${CURATIO_LISTEN:-127.0.0.1}:8000:8000"
+    restart: unless-stopped
+
+  # Automatic HTTPS for your domain. Started with: docker compose --profile https up -d
+  caddy:
+    image: caddy:2-alpine
+    container_name: curatio-caddy
+    profiles: ["https"]
+    depends_on:
+      - app
+    environment:
+      - CURATIO_DOMAIN=${CURATIO_DOMAIN:-}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  default:
+    name: curatio-network

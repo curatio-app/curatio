@@ -1,0 +1,16 @@
+{
+  "imdb_id": "tt_eval_jitter",
+  "season": 1,
+  "head_duration_sec": 600,
+  "tail_duration_sec": 600,
+  "episode_duration_sec": 1320,
+  "seed": 4242,
+  "intro": { "start": 40.0, "duration": 50.0 },
+  "credits": { "abs_start": 1260.0, "duration": 50.0 },
+  "episodes": [
+    { "episode": 1, "intro_start": 40.0, "credits_abs_start": 1260.0 },
+    { "episode": 2, "intro_start": 46.0, "credits_abs_start": 1256.0 },
+    { "episode": 3, "intro_start": 38.0, "credits_abs_start": 1262.0 },
+    { "episode": 4, "intro_start": 43.0, "credits_abs_start": 1258.0 }
+  ]
+}

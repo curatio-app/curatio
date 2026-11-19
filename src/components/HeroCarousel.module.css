@@ -1,0 +1,243 @@
+/* tvOS HeroBillboard: an inset card (680 of 1080, radius 18) with top-aligned
+   cover art under three scrims, the text block bottom-left (leading 40,
+   bottom 120) and the button row with page dots below it. */
+.hero {
+  padding: var(--nav-h) var(--page-margin) 0;
+}
+
+.frame {
+  position: relative;
+  height: var(--hero-h);
+  overflow: hidden;
+  border-radius: var(--radius-hero);
+  background: #0b0b0c;
+  isolation: isolate;
+  --hs: calc(var(--hero-h) / 680);
+}
+
+.placeholder {
+  height: var(--hero-h);
+  margin-top: var(--nav-h);
+  border-radius: var(--radius-hero);
+  background: linear-gradient(110deg, #111 30%, #1a1a1a 50%, #111 70%);
+}
+
+.art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.incoming {
+  animation: heroFade 900ms ease-out both;
+}
+
+@keyframes heroFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Radial from the lower-left: black .75 → .45 at 25% → .15 at 50% → clear. */
+.radial {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 2% 100%,
+    rgba(0, 0, 0, 0.75) 0,
+    rgba(0, 0, 0, 0.45) calc(225 * var(--hs)),
+    rgba(0, 0, 0, 0.15) calc(450 * var(--hs)),
+    transparent calc(675 * var(--hs))
+  );
+}
+
+/* Bottom fade, 400pt: clear → .10 → .26 → .52 → .79 → .92. */
+.bottomFade {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: calc(400 * var(--hs));
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) 40%,
+    rgba(0, 0, 0, 0.26) 52%,
+    rgba(0, 0, 0, 0.52) 67%,
+    rgba(0, 0, 0, 0.79) 82%,
+    rgba(0, 0, 0, 0.92) 100%
+  );
+}
+
+/* Top veil, 120pt: .32 → .08 at 45% → clear. */
+.topVeil {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: calc(120 * var(--hs));
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0.08) 45%, transparent);
+}
+
+.content {
+  position: absolute;
+  left: calc(40 * var(--hs));
+  right: calc(32 * var(--hs));
+  bottom: calc(120 * var(--hs));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(18 * var(--hs));
+  animation: contentIn var(--dur-standard) ease-out both;
+}
+
+@keyframes contentIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.logo {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(calc(540 * var(--hs)), 70%);
+  max-height: calc(100 * var(--hs));
+  object-fit: contain;
+  object-position: left bottom;
+  filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.35));
+}
+
+.title {
+  max-width: calc(780 * var(--hs));
+  font-size: calc(52 * var(--t));
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: #fff;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: calc(25 * var(--t));
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.metaPart + .metaPart::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin: 0 calc(10 * var(--t));
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.38);
+  vertical-align: middle;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill {
+  padding: calc(5 * var(--t)) calc(10 * var(--t));
+  border-radius: var(--radius-chip);
+  background: var(--panel);
+  border: 0.5px solid var(--divider);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.synopsis {
+  max-width: calc(780 * var(--hs));
+  font-size: var(--fs-synopsis);
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.6);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.actions {
+  position: absolute;
+  left: calc(40 * var(--hs));
+  bottom: calc(40 * var(--hs));
+  display: flex;
+  gap: 16px;
+}
+
+/* Hero capsules: white 12% at rest; hover/focus white with black text. */
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: calc(58 * var(--hs));
+  padding: calc(15 * var(--t)) calc(26 * var(--t));
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  color: #fff;
+  font-size: var(--fs-pill);
+  font-weight: 600;
+  transition:
+    background-color var(--dur-fast) ease-out,
+    color var(--dur-fast) ease-out,
+    transform var(--dur-standard) var(--ease-focus);
+}
+
+.action:hover,
+.action:focus-visible {
+  background: #fff;
+  color: #000;
+  transform: scale(1.05);
+}
+
+.dots {
+  position: absolute;
+  right: calc(32 * var(--hs));
+  bottom: calc(40 * var(--hs) + 18px);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.dot {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+}
+
+.dot > span {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(0.7);
+  transition:
+    transform 300ms ease-out,
+    background-color 300ms ease-out;
+}
+
+.dotActive > span {
+  transform: scale(1);
+  background: #fff;
+}
+
+.dot:hover > span {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+@media (max-width: 760px) {
+  .content {
+    bottom: calc(150 * var(--hs));
+  }
+}

@@ -1,0 +1,99 @@
+/*
+ * Curatio workspace tokens. Shared by the admin SPA and the server-rendered
+ * account pages. Dark only: the values follow the "Obsidian" playback design in
+ * src/styles/tokens.css (black canvas, white-alpha surfaces, white focus and
+ * hover, brand red for small accents only). The --ws-* and --curatio-* names are
+ * kept because other stylesheets read them.
+ */
+:root {
+  color-scheme: dark;
+
+  --ws-font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Segoe UI Variable Display", "Segoe UI", "Helvetica Neue", Roboto, sans-serif;
+  --ws-font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  /* Surfaces */
+  --ws-canvas: #000000;
+  --ws-surface: rgba(255, 255, 255, 0.06);
+  --ws-surface-raised: rgba(255, 255, 255, 0.1);
+  --ws-surface-muted: rgba(255, 255, 255, 0.06);
+  --ws-surface-hover: rgba(255, 255, 255, 0.14);
+  --ws-glass-fill: rgba(255, 255, 255, 0.09);
+  --ws-glass-stroke: rgba(255, 255, 255, 0.1);
+  --ws-glass-blur: blur(24px) saturate(1.5);
+
+  /* Text */
+  --ws-text: rgba(255, 255, 255, 0.78);
+  --ws-text-strong: #ffffff;
+  --ws-muted: rgba(255, 255, 255, 0.6);
+  --ws-faint: rgba(255, 255, 255, 0.5);
+  --ws-text-inverse: #000000;
+
+  /* Separators */
+  --ws-border: rgba(255, 255, 255, 0.06);
+  --ws-border-strong: rgba(255, 255, 255, 0.16);
+
+  /* Actions: focused or hovered controls fill white with black text. */
+  --ws-accent: #ffffff;
+  --ws-accent-hover: #ffffff;
+  --ws-accent-soft: rgba(255, 255, 255, 0.12);
+  --ws-accent-contrast: #000000;
+  --ws-focus: rgba(255, 255, 255, 0.82);
+  --ws-secondary: rgba(255, 255, 255, 0.12);
+
+  /* Brand red is for small accents only. */
+  --ws-brand: #e82133;
+  --ws-brand-soft: rgba(232, 33, 51, 0.15);
+
+  /* Status */
+  --ws-danger: #ff5a67;
+  --ws-danger-soft: rgba(232, 33, 51, 0.15);
+  --ws-success: #38b84a;
+  --ws-success-soft: rgba(56, 184, 74, 0.15);
+  --ws-warning: #f0b44c;
+  --ws-warning-soft: rgba(240, 180, 76, 0.14);
+
+  --ws-backdrop: rgba(0, 0, 0, 0.65);
+
+  /* Shape */
+  --ws-radius-control: 12px;
+  --ws-radius-card: 16px;
+  --ws-radius-panel: 22px;
+  --ws-radius-pill: 999px;
+  --ws-shadow-card: 0 30px 90px rgba(0, 0, 0, 0.56);
+  --ws-shadow-overlay: 0 30px 90px rgba(0, 0, 0, 0.56);
+
+  /* Motion */
+  --ws-motion-fast: 160ms;
+  --ws-motion-base: 220ms;
+  --ws-ease-focus: cubic-bezier(0.25, 0.9, 0.3, 1.05);
+
+  /* Layout and spacing */
+  --ws-sidebar-width: 240px;
+  --ws-control-height: 44px;
+  --ws-space-1: 4px;
+  --ws-space-2: 8px;
+  --ws-space-3: 12px;
+  --ws-space-4: 16px;
+  --ws-space-6: 24px;
+  --ws-space-8: 32px;
+  --ws-space-10: 40px;
+
+  /* Compatibility for older server-rendered markup. */
+  --curatio-canvas: var(--ws-canvas);
+  --curatio-ink: var(--ws-text-strong);
+  --curatio-muted: var(--ws-muted);
+  --curatio-faint: var(--ws-faint);
+  --curatio-line: var(--ws-border-strong);
+  --curatio-panel: var(--ws-glass-fill);
+  --curatio-focus: var(--ws-focus);
+  --curatio-danger: var(--ws-danger);
+  --curatio-success: var(--ws-success);
+  --curatio-radius: var(--ws-radius-panel);
+  --curatio-shadow: var(--ws-shadow-card);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --ws-motion-fast: 0ms; --ws-motion-base: 0ms; }
+}

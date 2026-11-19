@@ -1,0 +1,131 @@
+/* tvOS ContinueWatchingCard: 426x240, radius 12, bottom 64% fade to black 88%,
+   title 26 bold, remaining 23 at white 80%, 4pt accent progress. Focus: scale
+   1.012, white 54% stroke, shadow. */
+.cell {
+  position: relative;
+  flex: 0 0 var(--continue-w);
+  width: var(--continue-w);
+}
+
+/* Focus stroke + shadow on a separate layer that fades by opacity. */
+.cell::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--continue-h);
+  border-radius: var(--radius-card);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.54),
+    0 calc(10 * var(--u)) calc(30 * var(--u)) rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 180ms ease-out,
+    opacity 180ms ease-out;
+}
+
+.cell:has(> .card:hover)::before,
+.cell:has(> .card:focus-visible)::before {
+  opacity: 1;
+  transform: scale(1.012);
+}
+
+.card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: var(--continue-h);
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--card);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.06);
+  text-align: left;
+  transition: transform 180ms ease-out;
+}
+
+.card:hover,
+.card:focus-visible {
+  transform: scale(1.012);
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scrim {
+  position: absolute;
+  inset: 36% 0 0 0;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.88));
+}
+
+.text {
+  position: absolute;
+  left: calc(14 * var(--u) + 6px);
+  right: calc(14 * var(--u) + 6px);
+  bottom: calc(14 * var(--u) + 8px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title {
+  font-size: var(--fs-card-title);
+  font-weight: 700;
+  line-height: 1.15;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.caption {
+  font-size: var(--fs-card-meta);
+  color: rgba(255, 255, 255, 0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.progress {
+  position: absolute;
+  left: calc(14 * var(--u) + 6px);
+  right: calc(14 * var(--u) + 6px);
+  bottom: calc(12 * var(--u));
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.24);
+  overflow: hidden;
+}
+
+.progress > span {
+  display: block;
+  height: 100%;
+  background: var(--progress-fill);
+}
+
+.menuTrigger {
+  position: absolute;
+  top: calc(10 * var(--u));
+  right: calc(10 * var(--u));
+  z-index: 2;
+  opacity: 0;
+  transition: opacity var(--dur-fast) ease-out;
+}
+
+.cell:hover .menuTrigger,
+.cell:focus-within .menuTrigger,
+.menuTrigger[aria-expanded='true'] {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .menuTrigger {
+    display: none;
+  }
+}

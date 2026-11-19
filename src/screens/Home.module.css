@@ -1,0 +1,17 @@
+.home {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Movies and Series have no hero: the first row starts under the top bar. */
+.filtered {
+  padding-top: calc(var(--nav-h) + 12px);
+}
+
+.rails {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--section-gap) - 20 * var(--u));
+  margin-top: calc(18 * var(--u));
+  padding-bottom: clamp(3rem, 10vh, 7rem);
+}

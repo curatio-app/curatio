@@ -1,0 +1,39 @@
+{
+  "name": "curatio-web-ui",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Curatio web app and admin center.",
+  "author": "Curatio",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "test": "vitest run",
+    "test:browser": "playwright test"
+  },
+  "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.23",
+    "@radix-ui/react-dropdown-menu": "^2.1.24",
+    "@radix-ui/react-tabs": "^1.1.21",
+    "@tanstack/react-query": "^5.101.4",
+    "hls.js": "^1.6.16",
+    "lucide-react": "^1.17.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.3",
+    "@types/node": "^24.10.2",
+    "@types/react": "^18.3.27",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^5.1.1",
+    "jsdom": "^29.1.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.6",
+    "vitest": "^3.2.4",
+    "vitest-axe": "^0.1.0"
+  }
+}

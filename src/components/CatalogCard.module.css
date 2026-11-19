@@ -1,0 +1,296 @@
+/* tvOS CatalogSpringCardCell: 260x450 poster at rest, 660x450 landscape when
+   active, radius 14, scale 1.03, 2pt white 54% stroke and a soft shadow. */
+.cell {
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--poster-w);
+  transition: width var(--dur-catalog) var(--ease-catalog);
+  contain: layout style;
+}
+
+/* The focus stroke and shadow live on their own layer and fade by opacity, so
+   focusing a card composites instead of repainting a box-shadow every frame. */
+.cell::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--poster-h);
+  border-radius: var(--radius-poster);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.54),
+    var(--shadow-card);
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: center;
+  transition:
+    transform var(--dur-catalog) var(--ease-catalog),
+    opacity var(--dur-standard) ease-out;
+}
+
+.active::before {
+  opacity: 1;
+  transform: scale(1.03);
+}
+
+.active {
+  width: var(--poster-expanded-w);
+  z-index: 2;
+}
+
+.card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: var(--poster-h);
+  overflow: hidden;
+  border-radius: var(--radius-poster);
+  background: var(--card);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.06);
+  transform-origin: center;
+  transition: transform var(--dur-catalog) var(--ease-catalog);
+}
+
+.active .card {
+  transform: scale(1.03);
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+
+.poster,
+.wide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.wide {
+  opacity: 0;
+  transition: opacity 185ms ease-out;
+}
+
+.active .wideReady {
+  opacity: 1;
+}
+
+.fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(16 * var(--u));
+  text-align: center;
+  font-size: var(--fs-card-title);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Open-card bottom scrim: clear to .38, black 48% at .72, 92% at the bottom. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 38%,
+    rgba(0, 0, 0, 0.48) 72%,
+    rgba(0, 0, 0, 0.92) 100%
+  );
+  opacity: 0;
+  transition: opacity var(--dur-standard) ease-out;
+  pointer-events: none;
+}
+
+.active .scrim {
+  opacity: 1;
+}
+
+.info {
+  position: absolute;
+  left: calc(20 * var(--u));
+  bottom: calc(18 * var(--u));
+  width: calc(660 * 0.56 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: calc(6 * var(--u));
+  text-align: left;
+  opacity: 0;
+  transform: translateY(calc(10 * var(--u)));
+  transition:
+    opacity 120ms ease-out,
+    transform 120ms ease-out;
+  pointer-events: none;
+}
+
+.active .info {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 130ms ease-out 280ms,
+    transform 130ms ease-out 280ms;
+}
+
+.title {
+  font-size: var(--fs-card-title);
+  font-weight: 600;
+  line-height: 1.15;
+  color: #fff;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 calc(10 * var(--u));
+  font-size: var(--fs-card-meta);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Why the title is in this row ("Because you watched Heat"). */
+.reason {
+  font-size: var(--fs-card-meta);
+  color: rgba(255, 255, 255, 0.82);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metaPart + .metaPart::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-right: calc(10 * var(--u));
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.38);
+  vertical-align: middle;
+}
+
+/* Release badge: accent capsule, heavy uppercase. */
+.badge {
+  position: absolute;
+  top: calc(14 * var(--u));
+  left: calc(14 * var(--u));
+  /* Leaves room for the watched mark in the other corner. */
+  max-width: calc(100% - 28 * var(--u) - 34px);
+  padding: calc(6 * var(--u)) calc(11 * var(--u));
+  border-radius: var(--radius-pill);
+  background: var(--brand);
+  color: #fff;
+  font-size: calc(20 * var(--t));
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.watched {
+  position: absolute;
+  top: calc(14 * var(--u));
+  right: calc(14 * var(--u));
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--watched);
+}
+
+/* Top 10: a faint numeral at rest, a "#N" chip once open. */
+.rankNumeral {
+  position: absolute;
+  left: calc(14 * var(--u));
+  bottom: calc(6 * var(--u));
+  font-size: calc(76 * var(--t));
+  font-weight: 800;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.18);
+  transition: opacity 185ms ease-out;
+}
+
+.active .rankNumeral {
+  opacity: 0;
+}
+
+.rankChip {
+  position: absolute;
+  right: calc(16 * var(--u));
+  bottom: calc(18 * var(--u));
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(0, 0, 0, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: var(--fs-card-meta);
+  font-weight: 700;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 130ms ease-out;
+}
+
+.active .rankChip {
+  opacity: 1;
+  transition-delay: 280ms;
+}
+
+.progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: max(3px, calc(3 * var(--u)));
+  background: var(--progress-track);
+}
+
+.progress > span {
+  display: block;
+  height: 100%;
+  background: var(--progress-fill);
+}
+
+/* "…" title actions: shown on hover/focus; right-click and Shift+F10 too. */
+.menuTrigger {
+  position: absolute;
+  top: calc(12 * var(--u));
+  right: calc(12 * var(--u));
+  z-index: 3;
+  opacity: 0;
+  transition: opacity var(--dur-fast) ease-out;
+}
+
+.active .menuTrigger,
+.menuTrigger[aria-expanded='true'] {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .menuTrigger {
+    display: none;
+  }
+}
+
+/* A title that is not on the Plex/Jellyfin servers rests a step darker; the
+   open (active) card always shows full art. */
+.notOnServer .poster,
+.notOnServer .fallback {
+  filter: brightness(0.55);
+  transition: filter var(--dur-standard) var(--ease-focus);
+}
+
+.notOnServer.active .poster,
+.notOnServer.active .fallback {
+  filter: none;
+}

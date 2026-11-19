@@ -1,0 +1,22 @@
+{
+  "_comment": "45-min drama whose shared outro music starts 120s before the visual credits, playing under unique per-episode dialogue. The label is the TRUE credits start (2610s, 90s from the end). A credits matcher whose Hamming tolerance is loose enough to match music-under-dialogue latches onto the bed at 2490s and scores an IoU miss. This is the regression fixture for the 'Next Episode prompt fires minutes early' bug.",
+  "imdb_id": "tt_eval_music_bleed",
+  "season": 1,
+  "head_duration_sec": 600,
+  "tail_duration_sec": 600,
+  "episode_duration_sec": 2700,
+  "seed": 9182,
+  "intro": {
+    "start": 45.0,
+    "duration": 60.0
+  },
+  "credits": {
+    "abs_start": 2610.0,
+    "duration": 60.0,
+    "bleed": {
+      "duration": 120.0,
+      "corruption_bits": 8
+    }
+  },
+  "episodes": [1, 2, 3, 4]
+}

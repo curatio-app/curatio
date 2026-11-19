@@ -1,0 +1,127 @@
+/* tvOS ShelfRowView: row title 36 semibold (white 95% when the row is active,
+   80% otherwise), 8pt above the cards, rows 30pt apart. */
+.shelf {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--u));
+  scroll-margin-top: calc(var(--nav-h) + 18px);
+  /* Off-screen shelves skip layout and paint until they scroll near. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto calc(var(--poster-h) + 120px);
+}
+
+.title {
+  padding: 0 var(--page-margin);
+  font-size: var(--fs-row-title);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition:
+    color calc(var(--dur-standard) + 60ms) ease-in-out,
+    transform calc(var(--dur-standard) + 60ms) ease-in-out;
+}
+
+.shelf:focus-within .title,
+.shelf[data-row-active] .title {
+  color: rgba(255, 255, 255, 0.95);
+  transform: translateY(-2px);
+}
+
+.railWrap {
+  position: relative;
+}
+
+/* overflow-x also clips y: the vertical padding is room for the 1.03 lift,
+   the stroke and the shadow. */
+.rail {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--shelf-gap);
+  padding: calc(18 * var(--u)) var(--page-margin) calc(34 * var(--u));
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-padding-inline: var(--page-margin);
+  /* A card widening reflows only this rail, not the page. */
+  contain: layout paint;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+/* Expanding rails keep the row height of the tallest (resting) card. */
+.expandingRail {
+  min-height: calc(var(--poster-h) + 52 * var(--u));
+}
+
+.dragging {
+  cursor: grabbing;
+}
+
+.dragging * {
+  pointer-events: none;
+}
+
+/* Hover paging arrows for mouse users. */
+.arrow {
+  position: absolute;
+  top: calc(18 * var(--u));
+  bottom: calc(34 * var(--u));
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  width: var(--page-margin);
+  min-width: 40px;
+  border: 0;
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.left {
+  left: 0;
+  justify-content: flex-start;
+  padding-left: 6px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.85) 20%, transparent);
+}
+
+.right {
+  right: 0;
+  justify-content: flex-end;
+  padding-right: 6px;
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.85) 20%, transparent);
+}
+
+.left svg,
+.right svg {
+  width: 36px;
+  height: 36px;
+  padding: 4px;
+  border-radius: 999px;
+  /* Solid fill: the arrow sits on an 85% black gradient, so a live blur was
+     invisible but recomputed while the rail scrolled. */
+  background: rgba(58, 58, 60, 0.92);
+}
+
+.railWrap:hover .arrowShown {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.arrowShown:hover svg {
+  background: #fff;
+  color: #000;
+}
+
+@media (hover: none) {
+  .arrow {
+    display: none;
+  }
+}

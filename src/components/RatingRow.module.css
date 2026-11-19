@@ -1,0 +1,32 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0.9rem 0 0;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 4.5rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 0.6rem;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.value {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.label {
+  font-size: 0.7rem;
+  opacity: 0.72;
+}
+
+.votes {
+  font-size: 0.65rem;
+  opacity: 0.5;
+}

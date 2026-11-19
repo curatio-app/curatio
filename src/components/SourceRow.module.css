@@ -1,0 +1,99 @@
+/* Native-style source row (tvOS SourcePickerView.SourceRow). */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  padding: 0.75rem 0.8rem;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--separator);
+  text-align: left;
+  color: var(--text-primary);
+}
+
+.row + .row { margin-top: 0.4rem; }
+.row:hover { background: rgba(255, 255, 255, 0.05); }
+.selected { border-color: var(--separator-strong); background: rgba(255, 255, 255, 0.04); }
+
+.check { color: #fff; flex: 0 0 auto; }
+.circle { color: rgba(255, 255, 255, 0.4); flex: 0 0 auto; }
+
+.badge {
+  flex: 0 0 3.2rem;
+  font-size: var(--fs-meta);
+  font-weight: 800;
+  text-align: center;
+}
+.badge4k { color: rgb(242, 199, 71); }
+.badge1080 { color: rgb(102, 199, 255); }
+.badgeOther { color: var(--text-secondary); }
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.name {
+  font-size: var(--fs-settings-label);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tags,
+.languages {
+  font-size: var(--fs-small);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.filename {
+  display: flex;
+  min-width: 0;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: var(--fs-small);
+  color: rgba(255, 255, 255, 0.46);
+  white-space: nowrap;
+}
+.filenameHead { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.filenameTail { flex: 0 0 auto; }
+
+.mode { font-size: var(--fs-small); color: var(--accent); }
+.failure { font-size: var(--fs-small); color: var(--tile-orange-tint); overflow-wrap: anywhere; }
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  flex: 0 0 auto;
+  max-width: 40%;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.chevron { color: rgba(255, 255, 255, 0.3); flex: 0 0 auto; }
+
+@media (max-width: 520px) {
+  .row { flex-wrap: wrap; row-gap: 0.45rem; }
+  .info { flex: 1 1 calc(100% - 4.5rem); }
+  .pills { max-width: none; justify-content: flex-start; margin-left: 4.05rem; }
+  .chevron { display: none; }
+}

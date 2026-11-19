@@ -1,0 +1,119 @@
+/* Shared visual atoms reused across screens/components (import + compose).
+   Buttons follow the tvOS capsule vocabulary: idle white 12% with white text,
+   hovered or focused white with black text. */
+
+.eyebrow {
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.sectionLabel {
+  font-size: var(--fs-row-title);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.bigTitle {
+  font-size: var(--fs-page-title);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+/* Capsule button that reads as focused at rest (hero Play, details Play). */
+.primaryButton,
+.ghostButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(10 * var(--t));
+  min-height: max(36px, calc(58 * var(--t)));
+  padding: 0 calc(26 * var(--t));
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-pill);
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    transform var(--dur-fast) ease-out,
+    background-color var(--dur-fast) ease-out,
+    color var(--dur-fast) ease-out;
+}
+
+.primaryButton {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.ghostButton {
+  background: var(--button-more);
+  color: var(--text-primary);
+}
+
+.primaryButton:hover,
+.primaryButton:focus-visible,
+.ghostButton:hover,
+.ghostButton:focus-visible {
+  background: var(--accent);
+  color: var(--on-accent);
+  transform: scale(1.05);
+  outline: none;
+}
+
+.primaryButton:active,
+.ghostButton:active { transform: scale(0.96); }
+
+/* Filter capsule (tvOS Library filters). */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: max(34px, calc(50 * var(--t)));
+  padding: 0 calc(22 * var(--t));
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: var(--fs-pill);
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background-color var(--dur-fast) ease-out,
+    color var(--dur-fast) ease-out,
+    transform var(--dur-fast) ease-out;
+}
+
+.pillActive {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.16);
+  color: var(--text-primary);
+}
+
+.pill:hover,
+.pill:focus-visible {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  transform: scale(1.05);
+  outline: none;
+}
+
+/* Centered empty/error state card. */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  max-width: 28rem;
+  margin: clamp(2rem, 8vh, 6rem) auto;
+  padding: 0 var(--page-margin);
+  text-align: center;
+}
+
+.emptyState svg { color: var(--text-tertiary); }
+.emptyState strong { font-size: var(--fs-heading); font-weight: 600; color: var(--text-primary); }
+.emptyState p { font-size: var(--fs-body-small); color: var(--text-secondary); line-height: 1.45; }
+
+.spin { animation: curatio-spin 0.9s linear infinite; }
+@keyframes curatio-spin { to { transform: rotate(360deg); } }
